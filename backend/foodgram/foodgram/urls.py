@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 
-from recipes.views import RecipesViewSet, TagViewSet, IngredientViewSet
+from recipes.views import IngredientViewSet, RecipesViewSet, TagViewSet
 from users.views import FollowViewSet
 
 router = SimpleRouter()

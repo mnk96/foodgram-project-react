@@ -1,6 +1,7 @@
 import csv
 
-from django.core.management.base import BaseCommand, CommandParser
+from django.core.management.base import BaseCommand
+
 from recipes.models import Ingredients
 
 
@@ -16,6 +17,7 @@ class Command(BaseCommand):
             reader = csv.reader(csv_file)
             for row in reader:
                 try:
-                    obj, created = Ingredients.objects.get_or_create(name=row[0], measurement_unit=row[1])
+                    obj, created = Ingredients.objects.get_or_create(
+                        name=row[0], measurement_unit=row[1])
                 except Exception as error:
                     print(f'Ошибка в {row}:{error}')

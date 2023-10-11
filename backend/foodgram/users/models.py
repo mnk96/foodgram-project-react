@@ -9,7 +9,8 @@ class FoodgramUser(AbstractUser):
         USER = 'user', 'user'
         ADMIN = 'admin', 'admin'
 
-    username = models.CharField('Логин', max_length=150, unique=True, null=True)
+    username = models.CharField('Логин', max_length=150,
+                                unique=True, null=True)
     first_name = models.CharField('Имя', max_length=150, blank=True)
     last_name = models.CharField('Фамилия', max_length=150, blank=True)
     email = models.EmailField(
@@ -32,11 +33,10 @@ class FoodgramUser(AbstractUser):
 
 class Follow(models.Model):
     user = models.ForeignKey(FoodgramUser, on_delete=models.CASCADE,
-        related_name='follower')
-    author = models.ForeignKey(FoodgramUser,on_delete=models.CASCADE,
-        related_name='following')
-    
+                             related_name='follower')
+    author = models.ForeignKey(FoodgramUser, on_delete=models.CASCADE,
+                               related_name='following')
+
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-

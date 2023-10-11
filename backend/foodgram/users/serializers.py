@@ -2,27 +2,29 @@ from djoser.serializers import UserSerializer
 from rest_framework import serializers
 
 from recipes.models import Recipes
-from .models import FoodgramUser, Follow
-# from recipes.serializers import RecipeSubscribedSerializer
+from users.models import Follow, FoodgramUser
+
 
 class CustomUserSerializers(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = FoodgramUser
-        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed') 
-    
+        fields = ('email', 'id', 'username',
+                  'first_name', 'last_name', 'is_subscribed')
+
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
         if user.is_anonymous:
             return False
         return Follow.objects.filter(user=user, author=obj).exists()
-    
+
 
 class FollowRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipes
-        fields = ('id', 'name', 'image', 'cooking_time') 
+        fields = ('id', 'name', 'image', 'cooking_time')
+
 
 class FollowListSerializer(serializers.ModelSerializer):
     recipes_count = serializers.ReadOnlyField(source='recipes.count')
@@ -31,7 +33,8 @@ class FollowListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FoodgramUser
-        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed', 'recipes', 'recipes_count') 
+        fields = ('email', 'id', 'username', 'first_name',
+                  'last_name', 'is_subscribed', 'recipes', 'recipes_count')
 
     def validate(self, value):
         author = self.instance
@@ -44,8 +47,9 @@ class FollowListSerializer(serializers.ModelSerializer):
 
     def get_recipes(self, obj):
         recipes = Recipes.objects.filter(author=obj)
-        return FollowRecipeSerializer(recipes, many=True, context=self.context).data
-    
+        return FollowRecipeSerializer(recipes, many=True,
+                                      context=self.context).data
+
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
         if user.is_anonymous:

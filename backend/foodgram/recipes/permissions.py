@@ -1,7 +1,4 @@
 from rest_framework import permissions
-from rest_framework.permissions import SAFE_METHODS
-
-from users.models import FoodgramUser
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):

@@ -1,8 +1,9 @@
 import os
-from dotenv import load_dotenv
 
-# load_dotenv(find_dotenv())
-load_dotenv()
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+# load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -93,7 +94,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
-} 
+}
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -116,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -132,9 +133,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-# STATIC_URL = '/static/'
-
-# STATIC_ROOT = BASE_DIR / 'collected_static'
 STATIC_URL = '/backend_static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
