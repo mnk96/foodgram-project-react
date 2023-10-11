@@ -108,4 +108,4 @@ jobs:
         with:
           context: ./infra/
           push: true
-          tags: username/foodgram_gateway:latest 
+          tags: mnk96/foodgram_gateway:latest 
