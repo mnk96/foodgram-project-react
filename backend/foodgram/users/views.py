@@ -8,7 +8,7 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 
 import users.models as model
-from users.serializers import CustomUserSerializers, FollowListSerializer
+from users.serializers import CustomUserSerializers, FollowListSerializer, FollowSerializer
 
 User = get_user_model()
 
@@ -19,37 +19,29 @@ class FollowViewSet(UserViewSet):
 
     def get_queryset(self):
         return User.objects.all()
-
+    
     @action(detail=False, methods=('get',))
     def subscriptions(self, request):
-        user = self.request.user
-        queryset = User.objects.filter(following__user=user)
+        queryset = User.objects.filter(following__user=self.request.user)
         page = self.paginate_queryset(queryset)
         serializer = FollowListSerializer(page, many=True,
                                           context={'request': request})
         return self.get_paginated_response(serializer.data)
 
-    @action(detail=True, methods=('post', 'delete'),
+    @action(detail=True, methods=('post', ),
             permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):
+        user = self.request.user.id
+        data = {'user': user, 'author': id}
+        serializer = FollowSerializer(data=data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @subscribe.mapping.delete
+    def delete_subscribe(self, request, id=None):
         user = self.request.user
         author = get_object_or_404(User, pk=id)
-        if self.request.method == 'POST':
-            if user == author:
-                raise exceptions.ValidationError('Нельзя подписаться на себя.')
-            if model.Follow.objects.filter(user=user, author=author).exists():
-                raise exceptions.ValidationError(
-                    'Вы уже подписаны на этого пользователя')
-            model.Follow.objects.create(user=user, author=author)
-            serializer = FollowListSerializer(author,
-                                              context={'request': request})
-            return Response(serializer.data)
-        if self.request.method == 'DELETE':
-            if not model.Follow.objects.filter(user=user,
-                                               author=author).exists():
-                raise exceptions.ValidationError(
-                    'Подписки на этого пользователя нет.')
-            follow = get_object_or_404(model.Follow, user=user, author=author)
-            follow.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        follow = get_object_or_404(model.Follow, user=user, author=author)
+        follow.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

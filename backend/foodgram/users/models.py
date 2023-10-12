@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+import foodgram.constants as const
+
 
 class FoodgramUser(AbstractUser):
     """Модель пользователя."""
@@ -9,15 +11,15 @@ class FoodgramUser(AbstractUser):
         USER = 'user', 'user'
         ADMIN = 'admin', 'admin'
 
-    username = models.CharField('Логин', max_length=150,
+    username = models.CharField('Логин', max_length=const.MAX_USER,
                                 unique=True, null=True)
-    first_name = models.CharField('Имя', max_length=150, blank=True)
-    last_name = models.CharField('Фамилия', max_length=150, blank=True)
+    first_name = models.CharField('Имя', max_length=const.MAX_USER, blank=True)
+    last_name = models.CharField('Фамилия', max_length=const.MAX_USER, blank=True)
     email = models.EmailField(
         'Email',
-        max_length=254,
+        max_length=const.MAX_EMAIL,
         unique=True)
-    role = models.CharField(max_length=9, choices=Roles.choices, blank=True,
+    role = models.CharField(max_length=const.MAX_ROLE, choices=Roles.choices, blank=True,
                             null=True, default=Roles.USER)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -40,3 +42,7 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        constraints = (models.UniqueConstraint(
+            fields=('user', 'author'),
+            name = 'unique_follow'
+        ),)

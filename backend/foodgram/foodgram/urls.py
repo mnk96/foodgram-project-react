@@ -2,17 +2,19 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 
-from recipes.views import IngredientViewSet, RecipesViewSet, TagViewSet
-from users.views import FollowViewSet
+# from recipes.views import IngredientViewSet, RecipesViewSet, TagViewSet
+# from users.views import FollowViewSet
 
-router = SimpleRouter()
-router.register('recipes', RecipesViewSet)
-router.register('tags', TagViewSet)
-router.register('ingredients', IngredientViewSet)
-router.register('users', FollowViewSet)
+# router = SimpleRouter()
+# router.register('recipes', RecipesViewSet)
+# router.register('tags', TagViewSet)
+# router.register('ingredients', IngredientViewSet)
+# router.register('users', FollowViewSet)
+
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include('recipes.urls')),
+    path('', include('users.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
