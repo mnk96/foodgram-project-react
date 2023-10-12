@@ -14,12 +14,14 @@ class FoodgramUser(AbstractUser):
     username = models.CharField('Логин', max_length=const.MAX_USER,
                                 unique=True, null=True)
     first_name = models.CharField('Имя', max_length=const.MAX_USER, blank=True)
-    last_name = models.CharField('Фамилия', max_length=const.MAX_USER, blank=True)
+    last_name = models.CharField('Фамилия',
+                                 max_length=const.MAX_USER, blank=True)
     email = models.EmailField(
         'Email',
         max_length=const.MAX_EMAIL,
         unique=True)
-    role = models.CharField(max_length=const.MAX_ROLE, choices=Roles.choices, blank=True,
+    role = models.CharField(max_length=const.MAX_ROLE,
+                            choices=Roles.choices, blank=True,
                             null=True, default=Roles.USER)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -44,5 +46,4 @@ class Follow(models.Model):
         verbose_name_plural = 'Подписки'
         constraints = (models.UniqueConstraint(
             fields=('user', 'author'),
-            name = 'unique_follow'
-        ),)
+            name='unique_follow'),)

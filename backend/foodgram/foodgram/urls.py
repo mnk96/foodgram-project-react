@@ -1,15 +1,5 @@
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework.routers import SimpleRouter
-
-# from recipes.views import IngredientViewSet, RecipesViewSet, TagViewSet
-# from users.views import FollowViewSet
-
-# router = SimpleRouter()
-# router.register('recipes', RecipesViewSet)
-# router.register('tags', TagViewSet)
-# router.register('ingredients', IngredientViewSet)
-# router.register('users', FollowViewSet)
 
 
 urlpatterns = [

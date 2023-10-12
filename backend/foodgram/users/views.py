@@ -1,14 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from rest_framework import exceptions, status
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
 import users.models as model
-from users.serializers import CustomUserSerializers, FollowListSerializer, FollowSerializer
+from users.serializers import (FollowListSerializer,
+                               FollowSerializer, CustomUserSerializers)
 
 User = get_user_model()
 
@@ -19,7 +20,7 @@ class FollowViewSet(UserViewSet):
 
     def get_queryset(self):
         return User.objects.all()
-    
+
     @action(detail=False, methods=('get',))
     def subscriptions(self, request):
         queryset = User.objects.filter(following__user=self.request.user)

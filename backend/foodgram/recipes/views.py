@@ -2,7 +2,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import exceptions, status
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
@@ -12,7 +12,7 @@ import recipes.models as model
 import recipes.serializers as serializer
 from recipes.filters import IngredientFilter, RecipesFilter
 from recipes.permissions import IsAdminOrReadOnly
-from recipes.serializers import RecipeSubscribedSerializer, FavoriteSerializer, ShoppingCartSerializer
+from recipes.serializers import FavoriteSerializer, ShoppingCartSerializer
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
@@ -45,7 +45,8 @@ class RecipesViewSet(ModelViewSet):
     def favorite(self, request, pk=None):
         user = self.request.user.id
         data = {'user': user, 'recipe': pk}
-        serializer = FavoriteSerializer(data=data, context={'request': request})
+        serializer = FavoriteSerializer(data=data,
+                                        context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -63,17 +64,18 @@ class RecipesViewSet(ModelViewSet):
     def shopping_cart(self, request, pk=None):
         user = self.request.user.id
         data = {'user': user, 'recipe': pk}
-        serializer = ShoppingCartSerializer(data=data, context={'request': request})
+        serializer = ShoppingCartSerializer(data=data,
+                                            context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-    
+
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk=None):
         user = self.request.user
         recipe = get_object_or_404(model.Recipes, pk=pk)
         shopping_cart = get_object_or_404(model.ShoppingCart,
-                                              user=user, recipe=recipe)
+                                          user=user, recipe=recipe)
         shopping_cart.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

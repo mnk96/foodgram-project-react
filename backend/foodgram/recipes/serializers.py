@@ -162,33 +162,37 @@ class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Favorite
         fields = ('user', 'recipe')
-    
+
     def validate(self, value):
         request = self.context.get('request')
         recipe = value['recipe']
-        if models.Favorite.objects.filter(user=request.user, recipe=recipe).exists():
+        if models.Favorite.objects.filter(user=request.user,
+                                          recipe=recipe).exists():
             raise serializers.ValidationError('Рецепт уже в избранном')
         return value
-    
+
     def to_representation(self, instance):
         request = self.context.get('request')
         context = {'request': request}
-        return RecipeSubscribedSerializer(instance.recipe, context=context).data
+        return RecipeSubscribedSerializer(instance.recipe,
+                                          context=context).data
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ShoppingCart
         fields = ('user', 'recipe')
-    
+
     def validate(self, value):
         request = self.context.get('request')
         recipe = value['recipe']
-        if models.ShoppingCart.objects.filter(user=request.user, recipe=recipe).exists():
+        if models.ShoppingCart.objects.filter(user=request.user,
+                                              recipe=recipe).exists():
             raise serializers.ValidationError('Рецепт уже в списке покупок')
         return value
-    
+
     def to_representation(self, instance):
         request = self.context.get('request')
         context = {'request': request}
-        return RecipeSubscribedSerializer(instance.recipe, context=context).data
+        return RecipeSubscribedSerializer(instance.recipe,
+                                          context=context).data
