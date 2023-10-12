@@ -1,4 +1,4 @@
-# from colorfield.fields import ColorField
+from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
@@ -29,9 +29,8 @@ class Ingredients(models.Model):
 class Tags(models.Model):
     """Модель тега."""
     name = models.CharField('Тег', max_length=const.MAX_LENGTH, unique=True)
-    color = models.CharField('Код цвета', max_length=9)
-    # color = ColorField(default='#FF0000')
-    slug = models.SlugField(max_length=50, unique=True)
+    color = ColorField(format='hex', default='#FF0000', unique=True)
+    slug = models.SlugField(max_length=const.MAX_SLUG, unique=True)
 
     class Meta:
         verbose_name = 'Тег'
