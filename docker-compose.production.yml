@@ -24,10 +24,15 @@ services:
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - static:/static
-  gateway:
-    image: mnk96/foodgram_gateway
-    env_file: .env
-    volumes:
-      - static:/staticfiles/
+  nginx:
+    image: nginx:1.19.3
     ports:
-      - 8000:80
+      - "8000:80"
+    volumes:
+      - ./infra/nginx.conf:/etc/nginx/conf.d/default.conf
+      - static:/usr/share/nginx/html/
+      - backend_static:/backend_static
+      - backend_media:/backend_media
+      - ../docs/:/usr/share/nginx/html/api/docs/
+    depends_on:
+      - backend
