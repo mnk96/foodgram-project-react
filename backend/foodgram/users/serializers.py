@@ -36,15 +36,6 @@ class FollowListSerializer(serializers.ModelSerializer):
         fields = ('email', 'id', 'username', 'first_name',
                   'last_name', 'is_subscribed', 'recipes', 'recipes_count')
 
-    # def validate(self, value):
-    #     author = self.instance
-    #     user = self.context.get('request').user
-    #     if Follow.objects.filter(user=user, author=author).exists():
-    #         raise serializers.ValidationError('Нельзя подписаться повторно.')
-    #     if user == author:
-    #         raise serializers.ValidationError('Нельзя подписаться на себя.')
-    #     return value
-
     def get_recipes(self, obj):
         recipes = Recipes.objects.filter(author=obj)
         return FollowRecipeSerializer(recipes, many=True,

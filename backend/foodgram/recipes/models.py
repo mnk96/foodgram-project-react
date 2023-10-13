@@ -1,18 +1,17 @@
 from colorfield.fields import ColorField
-from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 import foodgram.constants as const
-
-User = get_user_model()
+from users.models import FoodgramUser
 
 
 class Ingredients(models.Model):
     """Модель ингедиентов для блюд."""
-    name = models.CharField('Название игредиента', max_length=const.MAX_LENGTH)
+    name = models.CharField(
+        'Название игредиента', max_length=const.MAX_LENGTH_NAME)
     measurement_unit = models.CharField('Единица измерения',
-                                        max_length=const.MAX_MESURE)
+                                        max_length=const.MAX_LENGTH_MESURE)
 
     def __str__(self):
         return self.name
@@ -29,9 +28,10 @@ class Ingredients(models.Model):
 
 class Tags(models.Model):
     """Модель тега."""
-    name = models.CharField('Тег', max_length=const.MAX_LENGTH, unique=True)
+    name = models.CharField(
+        'Тег', max_length=const.MAX_LENGTH_NAME, unique=True)
     color = ColorField(format='hex', default='#FF0000', unique=True)
-    slug = models.SlugField(max_length=const.MAX_SLUG, unique=True)
+    slug = models.SlugField(max_length=const.MAX_LENGTH_SLUG, unique=True)
 
     class Meta:
         verbose_name = 'Тег'
@@ -44,9 +44,9 @@ class Tags(models.Model):
 class Recipes(models.Model):
     """Модель рецепта."""
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        FoodgramUser, on_delete=models.CASCADE,
         related_name='recipes', verbose_name='Автop')
-    name = models.CharField('Название блюда', max_length=const.MAX_LENGTH)
+    name = models.CharField('Название блюда', max_length=const.MAX_LENGTH_NAME)
     image = models.ImageField(
         'Картинка',
         upload_to='recipes/images/',
@@ -58,8 +58,8 @@ class Recipes(models.Model):
         blank=True, related_name='recipes')
     tags = models.ManyToManyField(Tags, blank=True, related_name='recipes')
     cooking_time = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(const.MIN_VALUE),
-                    MaxValueValidator(const.MAX_VALUE)])
+        validators=[MinValueValidator(const.MIN_VALUE_COOK),
+                    MaxValueValidator(const.MAX_VALUE_COOK)])
 
     def __str__(self):
         return self.name
@@ -81,8 +81,8 @@ class IngredientRecipes(models.Model):
         related_name='ingredientrecipes',
         verbose_name='Игредиент')
     amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(const.MIN_VALUE),
-                    MaxValueValidator(const.MAX_VALUE)])
+        validators=[MinValueValidator(const.MIN_VALUE_AMOUNT),
+                    MaxValueValidator(const.MAX_VALUE_AMOUNT)])
 
     class Meta:
         verbose_name = 'Ингредиент в рецепте'
@@ -93,7 +93,7 @@ class IngredientRecipes(models.Model):
 
 
 class AddRecipe(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(FoodgramUser, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE,
                                verbose_name='Рецепт')
 
@@ -110,6 +110,10 @@ class Favorite(AddRecipe):
         verbose_name = 'Избранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
         default_related_name = 'favorite_recipe'
+        constraints = (models.UniqueConstraint(
+            fields=('user', 'recipe'),
+            name='unique_favorite'
+        ),)
 
 
 class ShoppingCart(AddRecipe):
@@ -121,3 +125,7 @@ class ShoppingCart(AddRecipe):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Список покупок'
         default_related_name = 'shopping_cart_recipe'
+        constraints = (models.UniqueConstraint(
+            fields=('user', 'recipe'),
+            name='unique_shopping_list'
+        ),)

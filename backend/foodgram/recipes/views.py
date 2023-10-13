@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 import recipes.models as model
 import recipes.serializers as serializer
 from recipes.filters import IngredientFilter, RecipesFilter
-from recipes.permissions import IsAdminOrReadOnly
+from recipes.permissions import IsAuthorOrAdmin
 from recipes.serializers import FavoriteSerializer, ShoppingCartSerializer
 
 
@@ -19,7 +19,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     """Вьюсет для тега."""
     queryset = model.Ingredients.objects.all()
     serializer_class = serializer.IngredientSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthorOrAdmin,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
     pagination_class = None
@@ -30,7 +30,7 @@ class RecipesViewSet(ModelViewSet):
     queryset = model.Recipes.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipesFilter
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthorOrAdmin,)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -107,5 +107,5 @@ class TagViewSet(ReadOnlyModelViewSet):
     """Вьюсет для тега."""
     queryset = model.Tags.objects.all()
     serializer_class = serializer.TagSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthorOrAdmin,)
     pagination_class = None

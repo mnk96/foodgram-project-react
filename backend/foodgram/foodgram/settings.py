@@ -13,7 +13,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
-BASE = os.getenv('SECRET_KEY')
+BASE = os.getenv('BASE')
 
 INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
