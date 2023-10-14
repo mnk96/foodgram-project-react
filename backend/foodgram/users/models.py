@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
 
 import foodgram.constants as const
@@ -12,11 +13,13 @@ class FoodgramUser(AbstractUser):
         ADMIN = 'admin', 'admin'
 
     username = models.CharField('Логин', max_length=const.MAX_LENGHT_USERNAME,
-                                unique=True, null=True)
+                                unique=True, validators=[RegexValidator(
+                regex='^[\w.@+-]+$',
+            ),])
     first_name = models.CharField(
-        'Имя', max_length=const.MAX_LENGHT_FIRST_NAME, blank=True)
+        'Имя', max_length=const.MAX_LENGHT_FIRST_NAME, blank=False)
     last_name = models.CharField(
-        'Фамилия', max_length=const.MAX_LENGHT_LAST_NAME, blank=True)
+        'Фамилия', max_length=const.MAX_LENGHT_LAST_NAME, blank=False)
     email = models.EmailField(
         'Email',
         max_length=const.MAX_LENGHT_EMAIL,

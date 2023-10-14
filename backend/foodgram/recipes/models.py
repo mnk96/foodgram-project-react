@@ -50,7 +50,7 @@ class Recipes(models.Model):
     image = models.ImageField(
         'Картинка',
         upload_to='recipes/images/',
-        blank=True
+        blank=False
     )
     text = models.TextField('Текстовое описание')
     ingredients = models.ManyToManyField(

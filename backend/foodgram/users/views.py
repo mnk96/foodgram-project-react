@@ -2,16 +2,17 @@ from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 
 import users.models as model
-from users.serializers import (FollowListSerializer,
-                               FollowSerializer, CustomUserSerializers)
+from users.serializers import (CustomUserSerializers,
+                               FollowListSerializer, FollowSerializer)
 
 
 class FollowViewSet(UserViewSet):
     serializer_class = CustomUserSerializers
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         return model.FoodgramUser.objects.all()
@@ -36,7 +37,7 @@ class FollowViewSet(UserViewSet):
 
     @subscribe.mapping.delete
     def delete_subscribe(self, request, id=None):
-        author = get_object_or_404(model.User, pk=id)
+        author = get_object_or_404(model.FoodgramUser, pk=id)
         follow = get_object_or_404(model.Follow,
                                    user=self.request.user, author=author)
         follow.delete()
