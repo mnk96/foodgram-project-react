@@ -41,15 +41,24 @@ class FollowViewSet(UserViewSet):
             permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):
         data = {'user': self.request.user.id, 'author': id}
-        serializer = FollowSerializer(data=data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        try:
+            serializer = FollowSerializer(data=data, context={'request': request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     @subscribe.mapping.delete
     def delete_subscribe(self, request, id=None):
         author = get_object_or_404(model.FoodgramUser, pk=id)
-        follow = get_object_or_404(model.Follow,
-                                   user=self.request.user, author=author)
-        follow.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        # follow = get_object_or_404(model.Follow,
+        #                            user=self.request.user, author=author)
+        # follow.delete()
+        # return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            follow = model.Follow.objects.get(user=self.request.user, author=author)
+            follow.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

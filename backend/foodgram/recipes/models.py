@@ -48,9 +48,8 @@ class Recipes(models.Model):
         related_name='recipes', verbose_name='Автop')
     name = models.CharField('Название блюда', max_length=const.MAX_LENGTH_NAME)
     image = models.ImageField(
-        'Картинка',
-        upload_to='recipes/images/',
-        blank=False
+        'Картинка', blank=False,
+        upload_to='recipes/images/'
     )
     text = models.TextField('Текстовое описание')
     ingredients = models.ManyToManyField(

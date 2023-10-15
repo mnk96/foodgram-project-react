@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 import recipes.models as models
+import foodgram.constants as const
 from users.serializers import CustomUserSerializers
 
 
@@ -92,7 +93,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     ingredients = IngredientRecipesWriteSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
         queryset=models.Tags.objects.all(), many=True)
-    image = Base64ImageField(required=False, allow_null=True)
+    image = Base64ImageField()
     cooking_time = serializers.IntegerField(validators=(MinValueValidator(1),))
 
     class Meta:
@@ -115,6 +116,9 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             if ingredients.count(ingredient) > 1:
                 raise serializers.ValidationError(
                     'Выбранные игредиенты не могут повторяться')
+            if ingredient['amount'] < const.MIN_VALUE_AMOUNT:
+                raise serializers.ValidationError(
+                    'Колличество ингредиента не может быть меньше 1')
         return value
 
     def create(self, validated_data):
@@ -122,9 +126,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         recipe = models.Recipes.objects.create(**validated_data)
         recipe.tags.set(tags)
-        print(ingredients)
-        for ingredient in ingredients:
-            print(ingredient['id'])
         models.IngredientRecipes.objects.bulk_create([
             models.IngredientRecipes(recipe=recipe,
                                      ingredient=get_object_or_404(
