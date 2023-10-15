@@ -37,7 +37,12 @@ class FollowListSerializer(serializers.ModelSerializer):
                   'last_name', 'is_subscribed', 'recipes', 'recipes_count')
 
     def get_recipes(self, obj):
-        recipes = Recipes.objects.filter(author=obj)
+        recipes_limit = self.context.get('request').GET.get('recipes_limit')
+        # recipes = Recipes.objects.filter(author=obj)
+        if recipes_limit is not None:
+            recipes = Recipes.objects.filter(author=obj)[:int(recipes_limit)]
+        else:
+            recipes = Recipes.objects.filter(author=obj)
         return FollowRecipeSerializer(recipes, many=True,
                                       context=self.context).data
 
