@@ -12,7 +12,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 import recipes.models as model
 import recipes.serializers as serializer
 from recipes.filters import IngredientFilter, RecipesFilter
-from recipes.permissions import IsAuthorOrAuthenticated
+from recipes.permissions import IsAuthorOrIsAuthenticated
 from recipes.serializers import FavoriteSerializer, ShoppingCartSerializer
 
 
@@ -20,7 +20,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     """Вьюсет для тега."""
     queryset = model.Ingredients.objects.all()
     serializer_class = serializer.IngredientSerializer
-    permission_classes = (IsAuthorOrAuthenticated,)
+    permission_classes = (IsAuthorOrIsAuthenticated,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
     pagination_class = None
@@ -31,7 +31,7 @@ class RecipesViewSet(ModelViewSet):
     queryset = model.Recipes.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipesFilter
-    permission_classes = (IsAuthorOrAuthenticated, )
+    permission_classes = (IsAuthorOrIsAuthenticated, )
     pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
@@ -57,12 +57,9 @@ class RecipesViewSet(ModelViewSet):
     def delete_favorite(self, request, pk=None):
         user = self.request.user
         recipe = get_object_or_404(model.Recipes, pk=pk)
-        try:
-            favorite = model.Favorite.objects.get(user=user, recipe=recipe)
-            favorite.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        favorite = get_object_or_404(model.Favorite, user=user, recipe=recipe) 
+        favorite.delete() 
+        return Response(status=status.HTTP_204_NO_CONTENT) 
 
     @action(detail=True, methods=('post', ),
             permission_classes=[IsAuthenticated])
@@ -78,14 +75,11 @@ class RecipesViewSet(ModelViewSet):
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk=None):
         user = self.request.user
-        recipe = get_object_or_404(model.Recipes, pk=pk)
-        try:
-            shopping_cart = get_object_or_404(model.ShoppingCart,
-                                              user=user, recipe=recipe)
-            shopping_cart.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        recipe = get_object_or_404(model.Recipes, pk=pk) 
+        shopping_cart = get_object_or_404(model.ShoppingCart,
+                                          user=user, recipe=recipe) 
+        shopping_cart.delete() 
+        return Response(status=status.HTTP_204_NO_CONTENT) 
 
     @action(detail=False, methods=('get', ),
             permission_classes=[IsAuthenticated])
@@ -115,5 +109,5 @@ class TagViewSet(ReadOnlyModelViewSet):
     """Вьюсет для тега."""
     queryset = model.Tags.objects.all()
     serializer_class = serializer.TagSerializer
-    permission_classes = (IsAuthorOrAuthenticated,)
+    permission_classes = (IsAuthorOrIsAuthenticated,)
     pagination_class = None

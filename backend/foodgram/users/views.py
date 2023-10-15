@@ -49,10 +49,7 @@ class FollowViewSet(UserViewSet):
     @subscribe.mapping.delete
     def delete_subscribe(self, request, id=None):
         author = get_object_or_404(model.FoodgramUser, pk=id)
-        try:
-            follow = model.Follow.objects.get(user=self.request.user,
-                                              author=author)
-            follow.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        follow = get_object_or_404(model.Follow,
+                                   user=self.request.user, author=author) 
+        follow.delete() 
+        return Response(status=status.HTTP_204_NO_CONTENT)
