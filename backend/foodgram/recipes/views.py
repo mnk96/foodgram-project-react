@@ -57,11 +57,7 @@ class RecipesViewSet(ModelViewSet):
     def delete_favorite(self, request, pk=None):
         user = self.request.user
         recipe = get_object_or_404(model.Recipes, pk=pk)
-        # favorite = get_object_or_404(model.Favorite, user=user, recipe=recipe)
-        # favorite.delete()
-        # return Response(status=status.HTTP_204_NO_CONTENT)
         try:
-            # recipe = get_object_or_404(model.Recipes, pk=pk)
             favorite = model.Favorite.objects.get(user=user, recipe=recipe)
             favorite.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -83,18 +79,9 @@ class RecipesViewSet(ModelViewSet):
     def delete_shopping_cart(self, request, pk=None):
         user = self.request.user
         recipe = get_object_or_404(model.Recipes, pk=pk)
-        # shopping_cart = get_object_or_404(model.ShoppingCart,
-        #                                   user=user, recipe=recipe)
-        # shopping_cart.delete()
-        # return Response(status=status.HTTP_204_NO_CONTENT)
-        # try:
-        #     recipe = model.Recipes.objects.get(pk=pk)
-        # except:
-        #     return Response(status=status.HTTP_404_NOT_FOUND)
         try:
-            # recipe = get_object_or_404(model.Recipes, pk=pk)
             shopping_cart = get_object_or_404(model.ShoppingCart,
-                                          user=user, recipe=recipe)
+                                              user=user, recipe=recipe)
             shopping_cart.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except:
