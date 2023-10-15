@@ -14,8 +14,7 @@ class FoodgramUser(AbstractUser):
 
     username = models.CharField('Логин', max_length=const.MAX_LENGHT_USERNAME,
                                 unique=True, validators=[RegexValidator(
-                regex='^[\w.@+-]+$',
-            ),])
+                                    regex='^[\w.@+-]+$',),])
     first_name = models.CharField(
         'Имя', max_length=const.MAX_LENGHT_FIRST_NAME, blank=False)
     last_name = models.CharField(

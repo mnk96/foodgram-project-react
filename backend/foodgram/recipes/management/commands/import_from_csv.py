@@ -2,6 +2,7 @@ import csv
 import os
 
 from django.core.management.base import BaseCommand
+
 from recipes.models import Ingredients
 
 
@@ -14,7 +15,7 @@ class Command(BaseCommand):
             reader = csv.reader(csv_file)
             try:
                 Ingredients.objects.bulk_create([Ingredients(
-                    name=name, measurement_unit=measurement_unit
-                    ) for name, measurement_unit in reader])
+                    name=name, measurement_unit=measurement_unit)
+                    for name, measurement_unit in reader])
             except Exception as error:
                 print(f'Ошибка:{error}')

@@ -3,13 +3,14 @@ from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
+                                        IsAuthenticated)
 from rest_framework.response import Response
 
 import users.models as model
+from users.permissions import ReadOnly
 from users.serializers import (CustomUserSerializers,
                                FollowListSerializer, FollowSerializer)
-from .permissions import ReadOnly
 
 
 class FollowViewSet(UserViewSet):
@@ -19,7 +20,7 @@ class FollowViewSet(UserViewSet):
 
     def get_queryset(self):
         return model.FoodgramUser.objects.all()
-    
+
     def get_permissions(self):
         if self.action == 'retrieve':
             return (IsAuthenticatedOrReadOnly(), )
