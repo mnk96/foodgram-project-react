@@ -2,20 +2,30 @@ from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 import users.models as model
 from users.serializers import (CustomUserSerializers,
                                FollowListSerializer, FollowSerializer)
+from .permissions import ReadOnly
 
 
 class FollowViewSet(UserViewSet):
     serializer_class = CustomUserSerializers
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticated, )
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         return model.FoodgramUser.objects.all()
+    
+    def get_permissions(self):
+        if self.action == 'retrieve':
+            return (IsAuthenticatedOrReadOnly(), )
+        if self.action == 'list':
+            return (ReadOnly(), )
+        return super().get_permissions()
 
     @action(detail=False, methods=('get',))
     def subscriptions(self, request):
@@ -33,7 +43,7 @@ class FollowViewSet(UserViewSet):
         serializer = FollowSerializer(data=data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @subscribe.mapping.delete
     def delete_subscribe(self, request, id=None):

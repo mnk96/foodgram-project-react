@@ -99,6 +99,7 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
+    'VIEWSET': 'users.views.FollowViewSet',
     'LOGIN_FIELD': 'email',
     'SERIALIZERS': {
         'user': 'users.serializers.CustomUserSerializers',
