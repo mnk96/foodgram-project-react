@@ -41,13 +41,10 @@ class FollowViewSet(UserViewSet):
             permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):
         data = {'user': self.request.user.id, 'author': id}
-        try:
-            serializer = FollowSerializer(data=data, context={'request': request})
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = FollowSerializer(data=data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @subscribe.mapping.delete
     def delete_subscribe(self, request, id=None):
