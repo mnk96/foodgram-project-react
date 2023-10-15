@@ -57,9 +57,9 @@ class RecipesViewSet(ModelViewSet):
     def delete_favorite(self, request, pk=None):
         user = self.request.user
         recipe = get_object_or_404(model.Recipes, pk=pk)
-        favorite = get_object_or_404(model.Favorite, user=user, recipe=recipe) 
-        favorite.delete() 
-        return Response(status=status.HTTP_204_NO_CONTENT) 
+        favorite = get_object_or_404(model.Favorite, user=user, recipe=recipe)
+        favorite.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=('post', ),
             permission_classes=[IsAuthenticated])
@@ -75,11 +75,11 @@ class RecipesViewSet(ModelViewSet):
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk=None):
         user = self.request.user
-        recipe = get_object_or_404(model.Recipes, pk=pk) 
+        recipe = get_object_or_404(model.Recipes, pk=pk)
         shopping_cart = get_object_or_404(model.ShoppingCart,
-                                          user=user, recipe=recipe) 
-        shopping_cart.delete() 
-        return Response(status=status.HTTP_204_NO_CONTENT) 
+                                          user=user, recipe=recipe)
+        shopping_cart.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=('get', ),
             permission_classes=[IsAuthenticated])

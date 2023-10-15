@@ -50,6 +50,6 @@ class FollowViewSet(UserViewSet):
     def delete_subscribe(self, request, id=None):
         author = get_object_or_404(model.FoodgramUser, pk=id)
         follow = get_object_or_404(model.Follow,
-                                   user=self.request.user, author=author) 
-        follow.delete() 
+                                   user=self.request.user, author=author)
+        follow.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
