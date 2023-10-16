@@ -76,6 +76,7 @@ jobs:
           cd foodgram
           sudo docker compose -f docker-compose.production.yml stop
           sudo docker compose -f docker-compose.production.yml rm backend
+          sudo docker pull mk96/foodgram
           rm -f .env
           touch .env
           echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
