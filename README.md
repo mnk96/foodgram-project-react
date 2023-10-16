@@ -7,7 +7,7 @@ Cайт, на котором пользователи могут публико�
 логин: vpupkin@yandex.ru
 пароль: Qwerty79
 
-![example workflow](https://github.com/mnk96/kittygram_final/actions/workflows/main.yml/badge.svg?event=push)
+![example workflow](https://github.com/mnk96/foodgram-project-react/actions/workflows/main.yml/badge.svg?event=push)
 
 ## Стек технологий:
 ____
