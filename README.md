@@ -3,8 +3,12 @@
 ## Описание проекта
 Cайтом, на котором пользователи могут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Пользователям сайта также доступен сервис «Список покупок». Он позволяеь создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
 Проект доступен по адресу: https://nataska-kittygram.hopto.org
+### Админка:
+логин: admin@ya.tu
+пароль: adminadmin135
 
 ![example workflow](https://github.com/mnk96/kittygram_final/actions/workflows/main.yml/badge.svg?event=push)
+
 
 ## Стек технологий:
 ____
@@ -55,9 +59,8 @@ docker build -t username/kittygram_gateway .
 ```
 2. Загрузите образы на DockerHub:
 ```sh
-docker push username/kittygram_frontend
-docker push username/kittygram_backend
-docker push username/kittygram_gateway
+docker push username/foodgram_frontend
+docker push username/foodgram_backend
 ```
 
 ## Деплой на сервер
@@ -123,7 +126,7 @@ sudo docker compose -f docker-compose.production.yml ps
 ```sh
 sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
 sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
-sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
+sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/static/. /backend_static/
 ```
 
 10. Перенаправьте запросы в Docker
@@ -154,7 +157,7 @@ sudo service nginx reload
 
 1. Создайте в папке foodgram/ директорию .github/workflows, а в ней — файл main.yml
 
-2. Скопируйте в этой файл содержимое файла kittygram_workflow.yml
+2. Скопируйте в этой файл содержимое файла foodgram_workflow.yml
 
 3. Создайте секреты в GitHub Actions
 ```sh
@@ -164,15 +167,13 @@ SSH_KEY - закрытый SSH-ключ для доступа к серверу
 SSH_PASSPHRASE - passphrase для этого ключа
 USER - имя пользователя
 HOST - IP-адрес вашего сервера
-TELEGRAM_TO - ID своего телеграм-аккаунта
-TELEGRAM_TOKEN - токен вашего бота
 ```
 
 3. Запустите workflow
 ```sh
-Dev/kittygram_final$ git add .
-Dev/kittygram_final$ git commit -m 'Add Actions'
-Dev/kittygram_final$ git push 
+Dev/foodgram-project-react_final$ git add .
+Dev/foodgram-project-reac_final$ git commit -m 'Add Actions'
+Dev/foodgram-project-reac_final$ git push 
 ```
 ## Автор проекта:
 Мищенко Наталья
