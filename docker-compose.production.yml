@@ -15,7 +15,7 @@ services:
     image: mnk96/foodgram_backend
     env_file: .env
     volumes:
-      - backend_static:/backend_static
+      - backend_static:/app/static
       - backend_media:/app/media
     depends_on:
       - db
