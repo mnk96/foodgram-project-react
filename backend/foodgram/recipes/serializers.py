@@ -116,7 +116,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             if ingredients.count(ingredient) > 1:
                 raise serializers.ValidationError(
                     'Выбранные игредиенты не могут повторяться')
-            if ingredient['amount'] < const.MIN_VALUE_AMOUNT:
+            if int(ingredient['amount']) < const.MIN_VALUE_AMOUNT:
                 raise serializers.ValidationError(
                     'Колличество ингредиента не может быть меньше 1')
         return value
