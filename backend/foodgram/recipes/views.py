@@ -4,14 +4,15 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+from rest_framework.permissions import AllowAny, SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 import recipes.models as model
 import recipes.serializers as serializer
 from recipes.filters import IngredientFilter, RecipesFilter
-from recipes.permissions import IsAuthorOrIsAuthenticated
+from recipes.pagination import CustomPageRecipesPaginator
+from recipes.permissions import IsAuthorOrReadOnly
 from recipes.serializers import FavoriteSerializer, ShoppingCartSerializer
 
 
@@ -19,7 +20,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     """Вьюсет для тега."""
     queryset = model.Ingredients.objects.all()
     serializer_class = serializer.IngredientSerializer
-    permission_classes = (IsAuthorOrIsAuthenticated,)
+    permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
     pagination_class = None
@@ -30,7 +31,8 @@ class RecipesViewSet(ModelViewSet):
     queryset = model.Recipes.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipesFilter
-    permission_classes = (IsAuthorOrIsAuthenticated, )
+    permission_classes = (IsAuthorOrReadOnly, )
+    pagination_class = CustomPageRecipesPaginator
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -107,5 +109,5 @@ class TagViewSet(ReadOnlyModelViewSet):
     """Вьюсет для тега."""
     queryset = model.Tags.objects.all()
     serializer_class = serializer.TagSerializer
-    permission_classes = (IsAuthorOrIsAuthenticated,)
+    permission_classes = (AllowAny,)
     pagination_class = None
